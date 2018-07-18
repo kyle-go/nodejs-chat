@@ -35,10 +35,14 @@
 
         .chat {
             margin: 0 8px;
-            background-color: aliceblue;
+            background-color: #fcfcfc;
             border: dimgray 1px solid;
-            border-radius: 10px;
+            border-radius: 5px;
             height: 400px;
+        }
+
+        .cell-right p {
+            background-color: #f0f0f0;
         }
 
         .chat-send {
@@ -49,8 +53,8 @@
             display: inline-block;
             border: #ccc 1px solid;
             border-radius: 3px;
-            padding: 8px 0;
-            width: 80%;
+            padding: 8px 5px;
+            width: 75%;
         }
 
         button {
@@ -169,6 +173,10 @@
 <div class="content">
     <div class="current-user">当前用户: <a class="user-name">AnyOne</a><a class="change-name"> (换个名字)</a></div>
     <div class="chat">
+        <div class="cell-right">
+            <span>张小三</span>
+            <p>啦啦啦啦啦啦爱丽丝地方拉萨扩大附近爱丽丝地方加拉上的发放吉萨劳动纠纷</p>
+        </div>
     </div>
     <div class="chat-send">
         <input class="send-content" type="text" placeholder="请输入内容...">
@@ -188,6 +196,17 @@
     const prefix_message_photo = '[MESSAGE_PHOTO]'; // 图片消息
     // 文本消息名字、内容分隔符
     const split_str = "#9527#";
+
+    function create_chat_cell(user_name, message) {
+        // 自己的消息，放在右侧
+        if (name === user_name) {
+
+            return;
+        }
+
+        // 别人的消息，放在左侧
+        return;
+    }
 
     // document ready
     $(() => {
@@ -224,6 +243,8 @@
                 let user_name = text.substring(0, pos);
                 let message = text.substring(pos + split_str.length);
                 console.log(user_name + ":" + message);
+                let cell = create_chat_cell(user_name, message);
+                $('.chat').append(cell);
             }
         };
 

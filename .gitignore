@@ -1,0 +1,8 @@
+# mypy
+.git/
+
+# pycharm
+.idea/
+
+# nodejs
+node_modules/

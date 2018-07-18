@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Client</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/js-cookie/latest/js.cookie.min.js"></script>
+</head>
+
+<body>
+<p> WebSocket client demo</p>
+<script>
+    // 我的名字
+    let name = "AnyOne";
+    let cookie_name = 'cookie_name';
+
+    // 定义消息前缀，表示特定的含义
+    const prefix_new_id = '[ID_NEW]';       // 分配名字给新用户
+    const prefix_change_id = '[ID_CHANGE]'; // 老用户换名字
+    const prefix_use_id = '[ID_USE]';       // 老用户用cookie里的老名字
+    const prefix_message_text = '[MESSAGE_TEXT]';   // 文本消息
+    const prefix_message_photo = '[MESSAGE_PHOTO]'; // 图片消息
+    // 文本消息名字、内容分隔符
+    const split_str = "#9527#";
+
+    let ws = new WebSocket('ws://localhost:9527');
+    ws.onopen = () => {
+        console.log('client connect server successfully.');
+
+        let old_name = Cookies.get(cookie_name);
+        if (old_name === undefined) {
+            ws.send(prefix_new_id);
+        } else {
+            ws.send(prefix_use_id + old_name);
+        }
+    };
+
+    ws.onmessage = message => {
+        let m = message.data;
+        console.log('Recv:' + m);
+        if (m.startsWith(prefix_new_id)) {  // 新名字
+            let new_name = m.substring(prefix_new_id.length);
+            Cookies.set(cookie_name, new_name, {expires: 3});
+        } else if (prefix_message_text) {
+            let text = m.startsWith(prefix_message_text);
+            let pos = text.indexOf(split_str);
+            let user_name = text.substring(0, pos);
+            let message = text.substring(pos + prefix_message_text.length);
+            console.log(user_name + ":" + message);
+        }
+    };
+
+    function send_text(text) {
+        ws.send(prefix_message_text + text);
+    }
+</script>
+</body>
+
+</html>

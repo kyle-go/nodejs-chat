@@ -23,7 +23,7 @@ function send_user_message(toUser, owner, message) {
     if (toUser === -1) {
         wss.clients.forEach(function (client) {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(owner + split_str + message);
+                client.send(prefix_message_text + owner + split_str + message);
             }
         });
         return;
@@ -32,7 +32,7 @@ function send_user_message(toUser, owner, message) {
     // 发给特定用户
     wss.clients.forEach(function (client) {
         if (client.user === toUser && client.readyState === WebSocket.OPEN) {
-            client.send(owner + split_str + message);
+            client.send(prefix_message_text + owner + split_str + message);
             return;
         }
     });
@@ -50,15 +50,15 @@ wss.on('connection', ws => {
             if (ws.user !== "") {
                 return;
             }
-            ws.user = anyone.find_empty_name();
+            ws.user = anyone.apply_name();
             ws.send(prefix_new_id + ws.user);
         } else if (m.startsWith(prefix_change_id)) { // 老用户换名字
             // 还没有名字，客户端逻辑出问题了，不做任何处理
             if (ws.user === "") {
                 return;
             }
-            anyone.set_name_unused(ws.user);
-            ws.user = anyone.find_empty_name();
+            anyone.set_name_status(ws.user, false);
+            ws.user = anyone.apply_name();
             ws.send(prefix_new_id + ws.user);
         } else if (m.startsWith(prefix_use_id)) { // 老用户用cookie里的老名字
             // 已经有名字了，客户端逻辑出问题了，不做任何处理
@@ -66,14 +66,15 @@ wss.on('connection', ws => {
                 return;
             }
             // 已经被占用了, 分配一个新名字吧
-            if (anyone.is_name_used(m.substring(prefix_use_id.length))) {
-                ws.user = anyone.find_empty_name();
+            if (anyone.get_name_useage(m.substring(prefix_use_id.length))) {
+                ws.user = anyone.apply_name();
             } else {
                 ws.user = m.substring(prefix_use_id.length);
+                anyone.set_name_status(ws.user, true);
             }
             ws.send(prefix_new_id + ws.user);
         } else if (m.startsWith(prefix_message_text)) { // 文本消息
-            // 广播
+            // 广播消息
             send_user_message(-1, ws.user, m.substring(prefix_message_text.length));
         } else if (m.startsWith(prefix_message_photo)) { // 图片消息
             console.log('not support photo message.');
@@ -81,9 +82,9 @@ wss.on('connection', ws => {
     });
 
     // 客户端断开连接
-    ws.on('close', (client) => {
+    ws.on('close', () => {
         console.log("disconnected:" + ws.user);
-        anyone.set_name_unused(ws.user);
+        anyone.set_name_status(ws.user, false);
     });
 });
 

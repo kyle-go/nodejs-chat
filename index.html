@@ -9,6 +9,11 @@
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/js-cookie/latest/js.cookie.min.js"></script>
     <style>
+        body {
+            font-size: 14px;
+            font-family: "Century Gothic", "Segoe UI", Arial, "Microsoft YaHei", Sans-Serif;
+        }
+
         .init {
             text-align: center;
         }
@@ -24,8 +29,12 @@
             font-size: 14px;
         }
 
+        .content {
+            display: none;
+        }
+
         .chat {
-            margin: 0 10px;
+            margin: 0 8px;
             background-color: aliceblue;
             border: dimgray 1px solid;
             border-radius: 10px;
@@ -33,38 +42,137 @@
         }
 
         .chat-send {
-            margin: 10px 10px;
+            margin: 10px 8px;
         }
 
         input {
             display: inline-block;
             border: #ccc 1px solid;
             border-radius: 3px;
-            padding: 5px 0;
+            padding: 8px 0;
             width: 80%;
         }
 
         button {
             width: 15%;
-            padding: 5px 0;
+            padding: 8px 0;
+            margin-left: 4px;
             background-color: darkgreen;
             border-radius: 3px;
             border: #ccc 1px solid;
             font-size: 12px;
             color: white;
         }
+
+        /* start 初始化动画 start */
+        #loading3 {
+            left: 50%;
+            margin: 20px 0 0 -25px;
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        .demo3 {
+            width: 4px;
+            height: 4px;
+            border-radius: 2px;
+            background: black;
+            position: absolute;
+            animation: demo3 linear 0.8s infinite;
+            -webkit-animation: demo3 linear 0.8s infinite;
+        }
+
+        .demo3:nth-child(1) {
+            left: 24px;
+            top: 2px;
+            animation-delay: 0s;
+        }
+
+        .demo3:nth-child(2) {
+            left: 40px;
+            top: 8px;
+            animation-delay: 0.1s;
+        }
+
+        .demo3:nth-child(3) {
+            left: 47px;
+            top: 24px;
+            animation-delay: 0.1s;
+        }
+
+        .demo3:nth-child(4) {
+            left: 40px;
+            top: 40px;
+            animation-delay: 0.2s;
+        }
+
+        .demo3:nth-child(5) {
+            left: 24px;
+            top: 47px;
+            animation-delay: 0.4s;
+        }
+
+        .demo3:nth-child(6) {
+            left: 8px;
+            top: 40px;
+            animation-delay: 0.5s;
+        }
+
+        .demo3:nth-child(7) {
+            left: 2px;
+            top: 24px;
+            animation-delay: 0.6s;
+        }
+
+        .demo3:nth-child(8) {
+            left: 8px;
+            top: 8px;
+            animation-delay: 0.7s;
+        }
+
+        @keyframes demo3 {
+            0%, 40%, 100% {
+                transform: scale(1);
+            }
+            20% {
+                transform: scale(3);
+            }
+        }
+
+        @-webkit-keyframes demo3 {
+            0%, 40%, 100% {
+                transform: scale(1);
+            }
+            20% {
+                transform: scale(3);
+            }
+        }
+
+        /* end 初始化动画 end */
     </style>
 </head>
 
 <body>
-<div class="init">正在初始化，请稍等...</div>
+<div class="init">正在初始化，请稍等...
+    <div id="loading3">
+        <div class="demo3"></div>
+        <div class="demo3"></div>
+        <div class="demo3"></div>
+        <div class="demo3"></div>
+        <div class="demo3"></div>
+        <div class="demo3"></div>
+        <div class="demo3"></div>
+        <div class="demo3"></div>
+    </div>
+</div>
 <div class="content">
-    <div class="current-user">当前用户: <a>AnyOne</a><a class="change-name"> (换个名字)</a></div>
+    <div class="current-user">当前用户: <a class="user-name">AnyOne</a><a class="change-name"> (换个名字)</a></div>
     <div class="chat">
     </div>
     <div class="chat-send">
-        <input type="text" placeholder="请输入内容...">
-        <button>发送</button>
+        <input class="send-content" type="text" placeholder="请输入内容...">
+        <button class="send-btn">发送</button>
     </div>
 </div>
 <script>
@@ -81,37 +189,59 @@
     // 文本消息名字、内容分隔符
     const split_str = "#9527#";
 
-    let ws = new WebSocket('ws://localhost:9527');
-    ws.onopen = () => {
-        console.log('client connect server successfully.');
+    // document ready
+    $(() => {
+        let ws = new WebSocket('ws://localhost:9527');
+        ws.onopen = () => {
+            console.log('client connect server successfully.');
 
-        let old_name = Cookies.get(cookie_name);
-        if (old_name === undefined) {
-            ws.send(prefix_new_id);
-        } else {
-            ws.send(prefix_use_id + old_name);
-        }
-    };
+            $('.init').css('display', 'none');
+            $('.content').css('display', 'block');
 
-    ws.onmessage = message => {
-        let m = message.data;
-        console.log('Recv:' + m);
-        if (m.startsWith(prefix_new_id)) {  // 新名字
-            let new_name = m.substring(prefix_new_id.length);
-            Cookies.set(cookie_name, new_name, {expires: 3});
-            name = new_name;
-        } else if (prefix_message_text) {
-            let text = m.startsWith(prefix_message_text);
-            let pos = text.indexOf(split_str);
-            let user_name = text.substring(0, pos);
-            let message = text.substring(pos + prefix_message_text.length);
-            console.log(user_name + ":" + message);
-        }
-    };
+            let old_name = Cookies.get(cookie_name);
+            if (old_name === undefined) {
+                ws.send(prefix_new_id);
+            } else {
+                ws.send(prefix_use_id + old_name);
+            }
+        };
 
-    function send_text(text) {
-        ws.send(prefix_message_text + text);
-    }
+        ws.onerror = () => {
+            alert("Σ( ° △ °|||)︴  服务器被二师兄吃掉了!!!");
+        };
+
+        ws.onmessage = message => {
+            let m = message.data;
+            console.log('Recv:' + m);
+            if (m.startsWith(prefix_new_id)) {  // 新名字
+                let new_name = m.substring(prefix_new_id.length);
+                Cookies.set(cookie_name, new_name, {expires: 3});
+                $('.user-name').text(new_name);
+                name = new_name;
+            } else if (m.startsWith(prefix_message_text)) {
+                let text = m.substring(prefix_message_text.length);
+                let pos = text.indexOf(split_str);
+                let user_name = text.substring(0, pos);
+                let message = text.substring(pos + split_str.length);
+                console.log(user_name + ":" + message);
+            }
+        };
+
+        $('.change-name').click(() => {
+            ws.send(prefix_change_id);
+        });
+
+        $('.send-btn').click(() => {
+            let text = $('.send-content').val();
+            if (text === '') {
+                alert("不能发送空白信息!");
+                return;
+            }
+            ws.send(prefix_message_text + text);
+        });
+    });
+
+
 </script>
 </body>
 

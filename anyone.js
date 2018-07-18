@@ -47,7 +47,7 @@ exports.init = () => {
 };
 
 // 从名字库中寻找一个可用名字
-exports.find_empty_name = () => {
+exports.apply_name = () => {
     let len = user_names.length;
 
     // 随机10次找一个没有被占用的名字
@@ -71,17 +71,17 @@ exports.find_empty_name = () => {
     return ""
 };
 
-// 释放名字占用
-exports.set_name_unused = name => {
+// 释放/占用名字占用， false-始放 true-占用
+exports.set_name_status = (name, status) => {
     for (let i = 0; i < user_names.length; i++) {
         if (user_names[i]['name'] === name) {
-            user_names[i]['used'] = false;
+            user_names[i]['used'] = status;
             return;
         }
     }
 };
 
-exports.is_name_used = name => {
+exports.get_name_useage = name => {
     for (let i = 0; i < user_names.length; i++) {
         if (user_names[i]['name'] === name) {
             return user_names[i]['used'];

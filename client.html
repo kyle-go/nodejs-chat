@@ -5,13 +5,68 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta charset="UTF-8">
-    <title>Client</title>
+    <title>匿名群聊</title>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/js-cookie/latest/js.cookie.min.js"></script>
+    <style>
+        .init {
+            text-align: center;
+        }
+
+        .current-user {
+            text-align: center;
+            margin: 10px;
+        }
+
+        .change-name {
+            color: dodgerblue;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .chat {
+            margin: 0 60px;
+            background-color: aliceblue;
+            border: dimgray 1px solid;
+            border-radius: 10px;
+            height: 600px;
+        }
+
+        .chat-send {
+            margin: 10px 60px;
+        }
+
+        input {
+            display: inline-block;
+            border: #ccc 1px solid;
+            border-radius: 3px;
+            padding: 5px 0;
+            width: 80%;
+        }
+
+        button {
+            width: 15%;
+            padding: 5px 0;
+            background-color: darkgreen;
+            border-radius: 3px;
+            border: #ccc 1px solid;
+            font-size: 12px;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
-<p> WebSocket client demo</p>
+<div class="init">正在初始化，请稍等...</div>
+<div class="content">
+    <div class="current-user">当前用户: <a>AnyOne</a><a class="change-name"> (换个名字)</a></div>
+    <div class="chat">
+    </div>
+    <div class="chat-send">
+        <input type="text" placeholder="请输入内容...">
+        <button>发送</button>
+    </div>
+</div>
 <script>
     // 我的名字
     let name = "AnyOne";
@@ -44,6 +99,7 @@
         if (m.startsWith(prefix_new_id)) {  // 新名字
             let new_name = m.substring(prefix_new_id.length);
             Cookies.set(cookie_name, new_name, {expires: 3});
+            name = new_name;
         } else if (prefix_message_text) {
             let text = m.startsWith(prefix_message_text);
             let pos = text.indexOf(split_str);

@@ -38,6 +38,9 @@
             border: dimgray 1px solid;
             border-radius: 5px;
             height: 400px;
+            overflow: scroll;
+            overflow-x: hidden;
+            overflow-y: visible;
         }
 
         .cell-left {
@@ -260,8 +263,10 @@
             }
         };
 
+        // 连接断开了
         ws.onerror = () => {
             alert("Σ( ° △ °|||)︴  服务器被二师兄吃掉了!!!");
+            location.reload();
         };
 
         ws.onmessage = message => {
@@ -280,6 +285,13 @@
                 console.log(user_name + ":" + message);
                 let cell = create_chat_cell(user_name, message);
                 $('.chat').append(cell);
+
+                // 延迟0.2秒滚动到底部
+                setTimeout(() => {
+                    // 这两种写法都可以，但是貌似第二种更专业一点吧
+                    // $('.chat')[0].scrollTop = $('.chat')[0].scrollHeight;
+                    $('.chat').prop('scrollTop', $('.chat').prop('scrollHeight'));
+                }, 200);
             }
         };
 

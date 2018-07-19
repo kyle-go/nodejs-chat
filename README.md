@@ -2,7 +2,7 @@
 
 在线测试（如果没人搭理你，可以用手机浏览器和PC浏览器一起测试）：
 
-[http://kylescript.coding.me/nodejs-chat/](http://kylescript.coding.me/nodejs-chat/)
+[http://chat.kyle.net.cn/](http://chat.kyle.net.cn/)
 
 PS. 为什么不直接用github Pages服务呢？ 
 

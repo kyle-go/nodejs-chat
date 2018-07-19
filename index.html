@@ -11,7 +11,6 @@
     <style>
         body {
             font-size: 14px;
-            font-family: "Century Gothic", "Segoe UI", Arial, "Microsoft YaHei", Sans-Serif;
         }
 
         .init {
@@ -41,8 +40,45 @@
             height: 400px;
         }
 
+        .cell-left {
+            margin: 6px 0;
+        }
+
+        .cell-right {
+            margin: 6px 0;
+            text-align: right;
+        }
+
+        .cell-left span {
+            font-size: 12px;
+            color: chocolate;
+            font-style: italic;
+        }
+
+        .cell-right span {
+            color: lime;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .cell-left p {
+            margin: 5px 0 5px 10px;
+            padding: 5px;
+            display: inline-block;
+            color: #101010;
+            background-color: #e6e5ed;
+            border-radius: 8px;
+            width: 75%;
+        }
+
         .cell-right p {
-            background-color: #f0f0f0;
+            margin: 5px 10px 5px 0;
+            padding: 5px;
+            display: inline-block;
+            color: #FAFAFA;
+            background-color: #1E8EFE;
+            border-radius: 8px;
+            width: 75%;
         }
 
         .chat-send {
@@ -173,10 +209,12 @@
 <div class="content">
     <div class="current-user">当前用户: <a class="user-name">AnyOne</a><a class="change-name"> (换个名字)</a></div>
     <div class="chat">
-        <div class="cell-right">
-            <span>张小三</span>
-            <p>啦啦啦啦啦啦爱丽丝地方拉萨扩大附近爱丽丝地方加拉上的发放吉萨劳动纠纷</p>
-        </div>
+        <!--<div class="cell-left">-->
+        <!--<p><span>黄旭东</span><br>ＭＤ老子是专业解说好吗？这怎么奶死嘛，专业解说看这种局面还看不懂啊？</p>-->
+        <!--</div>-->
+        <!--<div class="cell-right">-->
+        <!--<p><span>鲁迅</span><br>我即使是死了,钉在在棺材里了,也要在墓里,用这腐朽的声带喊出：“我没说过这句话。”</p>-->
+        <!--</div>-->
     </div>
     <div class="chat-send">
         <input class="send-content" type="text" placeholder="请输入内容...">
@@ -200,12 +238,9 @@
     function create_chat_cell(user_name, message) {
         // 自己的消息，放在右侧
         if (name === user_name) {
-
-            return;
+            return '<div class="cell-right"><p><span>' + user_name + '</span><br>' + message + '</p></div>'
         }
-
-        // 别人的消息，放在左侧
-        return;
+        return '<div class="cell-left"><p><span>' + user_name + '</span><br>' + message + '</p></div>'
     }
 
     // document ready

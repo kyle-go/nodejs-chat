@@ -4,6 +4,12 @@
 
 [http://chat.kyle.net.cn/](http://chat.kyle.net.cn/)
 
-PS. 为什么不直接用github Pages服务呢？ 
+How to run?
+```
+npm install
+node server.js
+```
 
-因为github Pages强制开启https，需要服务器部署证书，绑定一个自定义域名。
+*** PS. 为什么不直接用github Pages服务呢？ ***
+
+因为github Pages强制开启https，需要服务器绑定一个自定义域名, 并绑定ssl证书。

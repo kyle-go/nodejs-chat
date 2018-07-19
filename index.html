@@ -294,9 +294,18 @@
                 return;
             }
             ws.send(prefix_message_text + text);
+            $('.send-content').val("");
         });
     });
 
+    // 响应回车登录事件
+    document.onkeydown = function (e) {
+        if (!e) e = window.event;
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            $('.send-btn').click();
+        }
+    };
 
 </script>
 </body>

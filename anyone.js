@@ -87,7 +87,7 @@ exports.set_name_status = (name, status) => {
     }
 };
 
-exports.get_name_useage = name => {
+exports.get_name_usage = name => {
     for (let i = 0; i < user_names.length; i++) {
         if (user_names[i]['name'] === name) {
             return user_names[i]['used'];

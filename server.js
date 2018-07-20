@@ -69,7 +69,7 @@ wss.on('connection', ws => {
                 return;
             }
             // 已经被占用了, 分配一个新名字吧
-            if (anyone.get_name_useage(m.substring(prefix_use_id.length))) {
+            if (anyone.get_name_usage(m.substring(prefix_use_id.length))) {
                 ws.user = anyone.apply_name();
             } else {
                 ws.user = m.substring(prefix_use_id.length);

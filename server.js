@@ -1,3 +1,6 @@
+// Nodejs实现匿名聊天群，欢迎开车
+// https://github.com/kylescript/nodejs-chat
+
 // 定义消息前缀，表示特定的含义
 const prefix_new_id = '[ID_NEW]';       // 分配名字给新用户
 const prefix_change_id = '[ID_CHANGE]'; // 老用户换名字

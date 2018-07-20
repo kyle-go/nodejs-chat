@@ -1,3 +1,7 @@
+<!--
+	Nodejs实现匿名聊天群，欢迎开车
+	https://github.com/kylescript/nodejs-chat
+ -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +9,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta charset="UTF-8">
-    <title>匿名群聊</title>
+    <title>匿名开车群</title>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/js-cookie/latest/js.cookie.min.js"></script>
     <style>
@@ -62,6 +66,8 @@
             color: lime;
             font-size: 12px;
             font-style: italic;
+            float: right;
+            margin-right: 5px;
         }
 
         .cell-left p {
@@ -72,6 +78,8 @@
             background-color: #e6e5ed;
             border-radius: 8px;
             max-width: 75%;
+            word-break: break-all;
+            word-wrap: break-word;
         }
 
         .cell-right p {
@@ -82,6 +90,9 @@
             background-color: #1E8EFE;
             border-radius: 8px;
             max-width: 75%;
+            text-align: left;
+            word-break: break-all;
+            word-wrap: break-word;
         }
 
         .chat-send {
@@ -239,6 +250,16 @@
     const split_str = "#9527#";
 
     function create_chat_cell(user_name, message) {
+        function html2Escape(sHtml) {
+            return sHtml.replace(/[<>&"]/g, (c) => {
+                return {'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c];
+            });
+        }
+
+        // 暂时去掉吧，让大家玩。
+        // user_name = html2Escape(user_name);
+        // message=html2Escape(message);
+
         // 自己的消息，放在右侧
         if (name === user_name) {
             return '<div class="cell-right"><p><span>' + user_name + '</span><br>' + message + '</p></div>'
@@ -291,7 +312,7 @@
                     // 这两种写法都可以，但是貌似第二种更专业一点吧
                     // $('.chat')[0].scrollTop = $('.chat')[0].scrollHeight;
                     $('.chat').prop('scrollTop', $('.chat').prop('scrollHeight'));
-                }, 200);
+                }, 100);
             }
         };
 

@@ -1,5 +1,8 @@
 /*
- 从百度搜索排行榜上爬取一些名人，作为用户名字
+	Nodejs实现匿名聊天群，欢迎开车
+	https://github.com/kylescript/nodejs-chat
+
+    从百度搜索排行榜上爬取一些名人，作为用户名字
 */
 
 const http = require('http');
@@ -26,7 +29,10 @@ function get_hot_man(callback) {
                 let pos_point = data.indexOf("\"", last_pos);
                 if (pos_point > 0) {
                     last_pos = pos_point + 1;
-                    result.push(data.substring(pos + start.length, pos_point));
+                    let name = data.substring(pos + start.length, pos_point);
+                    if (!(name in result)) {
+                        result[name] = 1;
+                    }
                 }
                 pos = data.indexOf(start, last_pos);
             }
@@ -41,7 +47,7 @@ function get_hot_man(callback) {
 exports.init = () => {
     get_hot_man(famous => {
         for (let name in famous) {
-            user_names.push({"name": famous[name], "used": false});
+            user_names.push({"name": name, "used": false});
         }
     });
 };

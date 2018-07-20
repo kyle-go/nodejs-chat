@@ -93,4 +93,7 @@ exports.get_name_usage = name => {
             return user_names[i]['used'];
         }
     }
+
+    // 这种异常名字当作已被占用处理
+    return true;
 };
